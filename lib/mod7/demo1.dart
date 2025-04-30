@@ -43,6 +43,10 @@ class _DemoFormState extends State<DemoForm> {
   String age = "";
   String sport = "";
 
+  var nameController = TextEditingController();
+  var ageController = TextEditingController();
+  var sportController = TextEditingController();
+
   final _keyForm = GlobalKey<FormState>();
 
   void updateRadioValue(value) {
@@ -87,6 +91,7 @@ class _DemoFormState extends State<DemoForm> {
           child: Column(
             children: [
               TextFormField(
+                controller: nameController,
                 onSaved: (value){
                   name = value!;
                 } ,
@@ -97,6 +102,11 @@ class _DemoFormState extends State<DemoForm> {
                 ),
               ),
               TextFormField(
+                // pour avoir une validation dynamique
+                onChanged: (value){
+                  print(ageController.text);
+                },
+                controller: ageController,
                 onSaved: (value){
                   age = value!;
                 },
