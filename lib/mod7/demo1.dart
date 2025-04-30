@@ -46,6 +46,26 @@ class _DemoFormState extends State<DemoForm> {
     });
   }
 
+  String? validateName(String? value){
+    if(value == null || value.trim().isEmpty){
+      return "veuillez remplir votre nom! ";
+    }
+    if(value.length < 2){
+      return "Votre nom doit contenir au moins 3 caractères";
+    }
+    return null;
+  }
+
+  String? validateAge(String? value){
+    if(value == null || value.trim().isEmpty){
+      return "veuillez remplir votre age! ";
+    }
+    if(int.parse(value) < 0){
+      return "Votre age ne peut être négatif";
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -54,12 +74,14 @@ class _DemoFormState extends State<DemoForm> {
       child: Column(
         children: [
           TextFormField(
+            validator: validateName,
             decoration: InputDecoration(
               labelText: "Name",
               hintText: "Veuillez saisir votre nom !",
             ),
           ),
           TextFormField(
+            validator: validateAge,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
               labelText: "Age",
