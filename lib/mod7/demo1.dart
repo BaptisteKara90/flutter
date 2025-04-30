@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
-void main(){
+void main() {
   runApp(App());
 }
 
-class App extends StatelessWidget{
-
+class App extends StatelessWidget {
   const App({super.key});
 
   @override
@@ -17,8 +16,7 @@ class App extends StatelessWidget{
   }
 }
 
-class AppHomePage extends StatelessWidget{
-
+class AppHomePage extends StatelessWidget {
   String title;
 
   AppHomePage({required this.title});
@@ -26,25 +24,32 @@ class AppHomePage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar : AppBar(
+        appBar: AppBar(
           title: Text(this.title),
         ),
-        body: DemoForm()
-    );
+        body: DemoForm());
   }
 }
 
-
-class DemoForm extends StatefulWidget{
+class DemoForm extends StatefulWidget {
   @override
   State<DemoForm> createState() => _DemoFormState();
 }
 
 class _DemoFormState extends State<DemoForm> {
+  bool isOk = false;
+  String radio = "";
+
+  void updateRadioValue(value) {
+    setState(() {
+      radio = value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Form(child:
-    Padding(
+    return Form(
+        child: Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
@@ -62,15 +67,41 @@ class _DemoFormState extends State<DemoForm> {
             ),
           ),
           DropdownButtonFormField(
-              items: [
-                DropdownMenuItem(child: Text("Choisir sport :"), value: null),
-                DropdownMenuItem(child: Text("Curling"), value: "Curling"),
-                DropdownMenuItem(child: Text("Air Poney"), value: "Air Poney"),
-                DropdownMenuItem(child: Text("Quidditch"), value: "Quidditch"),
-                DropdownMenuItem(child: Text("Disco Foot"), value:"Disco Foot"),
-              ],
-              onChanged: (dynamic){},
-          )
+            items: [
+              DropdownMenuItem(child: Text("Choisir sport :"), value: null),
+              DropdownMenuItem(child: Text("Curling"), value: "Curling"),
+              DropdownMenuItem(child: Text("Air Poney"), value: "Air Poney"),
+              DropdownMenuItem(child: Text("Quidditch"), value: "Quidditch"),
+              DropdownMenuItem(child: Text("Disco Foot"), value: "Disco Foot"),
+            ],
+            onChanged: (value) {},
+          ),
+          Row(children: [
+            Checkbox(
+                value: isOk,
+                onChanged: (value) {
+                  setState(() {
+                    isOk = value!;
+                  });
+                }),
+            Text("La <form> ?")
+          ]),
+          Row(
+            children: [
+              Text("Vrai"),
+              Radio<String>(
+                value: "true",
+                groupValue: radio,
+                onChanged: updateRadioValue,
+              ),
+              Text("Faux"),
+              Radio<String>(
+                  value: "false",
+                  groupValue: radio,
+                  onChanged: updateRadioValue)
+            ],
+          ),
+          ElevatedButton(onPressed: () {}, child: Text("Valider"))
         ],
       ),
     ));
