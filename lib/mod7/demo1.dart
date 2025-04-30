@@ -39,6 +39,11 @@ class DemoForm extends StatefulWidget {
 class _DemoFormState extends State<DemoForm> {
   bool isOk = false;
   String radio = "";
+  String name = "";
+  String age = "";
+  String sport = "";
+
+  final _keyForm = GlobalKey<FormState>();
 
   void updateRadioValue(value) {
     setState(() {
@@ -46,22 +51,29 @@ class _DemoFormState extends State<DemoForm> {
     });
   }
 
-  String? validateName(String? value){
-    if(value == null || value.trim().isEmpty){
+  String? validateName(String? value) {
+    if (value == null || value.trim().isEmpty) {
       return "veuillez remplir votre nom! ";
     }
-    if(value.length < 2){
+    if (value.length < 2) {
       return "Votre nom doit contenir au moins 3 caractères";
     }
     return null;
   }
 
-  String? validateAge(String? value){
-    if(value == null || value.trim().isEmpty){
+  String? validateAge(String? value) {
+    if (value == null || value.trim().isEmpty) {
       return "veuillez remplir votre age! ";
     }
-    if(int.parse(value) < 0){
+    if (int.parse(value) < 0) {
       return "Votre age ne peut être négatif";
+    }
+    return null;
+  }
+
+  String? validateSport(String? value) {
+    if (value == null) {
+      return "Veuillez choisir un sport";
     }
     return null;
   }
@@ -69,63 +81,87 @@ class _DemoFormState extends State<DemoForm> {
   @override
   Widget build(BuildContext context) {
     return Form(
+        key: _keyForm,
         child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          TextFormField(
-            validator: validateName,
-            decoration: InputDecoration(
-              labelText: "Name",
-              hintText: "Veuillez saisir votre nom !",
-            ),
-          ),
-          TextFormField(
-            validator: validateAge,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              labelText: "Age",
-              hintText: "Veuillez saisir votre age !",
-            ),
-          ),
-          DropdownButtonFormField(
-            items: [
-              DropdownMenuItem(child: Text("Choisir sport :"), value: null),
-              DropdownMenuItem(child: Text("Curling"), value: "Curling"),
-              DropdownMenuItem(child: Text("Air Poney"), value: "Air Poney"),
-              DropdownMenuItem(child: Text("Quidditch"), value: "Quidditch"),
-              DropdownMenuItem(child: Text("Disco Foot"), value: "Disco Foot"),
-            ],
-            onChanged: (value) {},
-          ),
-          Row(children: [
-            Checkbox(
-                value: isOk,
-                onChanged: (value) {
-                  setState(() {
-                    isOk = value!;
-                  });
-                }),
-            Text("La <form> ?")
-          ]),
-          Row(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
             children: [
-              Text("Vrai"),
-              Radio<String>(
-                value: "true",
-                groupValue: radio,
-                onChanged: updateRadioValue,
+              TextFormField(
+                onSaved: (value){
+                  name = value!;
+                } ,
+                validator: validateName,
+                decoration: InputDecoration(
+                  labelText: "Name",
+                  hintText: "Veuillez saisir votre nom !",
+                ),
               ),
-              Text("Faux"),
-              Radio<String>(
-                  value: "false",
-                  groupValue: radio,
-                  onChanged: updateRadioValue)
+              TextFormField(
+                onSaved: (value){
+                  age = value!;
+                },
+                validator: validateAge,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: "Age",
+                  hintText: "Veuillez saisir votre age !",
+                ),
+              ),
+              DropdownButtonFormField<String?>(
+                onSaved: (value){
+                  sport = value!;
+                },
+                validator: validateSport,
+                items: [
+                  DropdownMenuItem(child: Text("Choisir sport :"), value: null),
+                  DropdownMenuItem(child: Text("Curling"), value: "Curling"),
+                  DropdownMenuItem(
+                      child: Text("Air Poney"), value: "Air Poney"),
+                  DropdownMenuItem(
+                      child: Text("Quidditch"), value: "Quidditch"),
+                  DropdownMenuItem(
+                      child: Text("Disco Foot"), value: "Disco Foot"),
+                ],
+                onChanged: (value) {},
+              ),
+              Row(children: [
+                Checkbox(
+                    value: isOk,
+                    onChanged: (value) {
+                      setState(() {
+                        isOk = value!;
+                      });
+                    }),
+                Text("La <form> ?")
+              ]),
+              Row(
+                children: [
+                  Text("Vrai"),
+                  Radio<String>(
+                    value: "true",
+                    groupValue: radio,
+                    onChanged: updateRadioValue,
+                  ),
+                  Text("Faux"),
+                  Radio<String>(
+                      value: "false",
+                      groupValue: radio,
+                      onChanged: updateRadioValue)
+                ],
+              ),
+              ElevatedButton(onPressed: () {
+                if(_keyForm.currentState!.validate()){
+                    _keyForm.currentState!.save();
+
+                    print(name);
+                    print(age);
+                    print(sport);
+                    print(radio);
+                    print(isOk);
+                }
+              }, child: Text("Valider"))
             ],
           ),
-          ElevatedButton(onPressed: () {}, child: Text("Valider"))
-        ],
-      ),
-    ));
+        ));
   }
 }
